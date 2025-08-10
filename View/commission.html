@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Compensation - Commission</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+		}
+
+		.menu {
+			margin-bottom: 20px;
+		}
+
+		.tabs {
+			margin-bottom: 15px;
+		}
+
+		.tabs a {
+			padding: 8px 16px;
+			margin-right: 10px;
+			text-decoration: none;
+			border: 1px solid #333;
+			border-bottom: none;
+			background-color: #eee;
+			color: #333;
+			border-radius: 5px 5px 0 0;
+		}
+
+		.tabs a.active {
+			background-color: white;
+			font-weight: bold;
+			border-bottom: 1px solid white;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			border: 1px solid #ccc;
+		}
+
+		th,
+		td {
+			border: 1px solid #ccc;
+			padding: 6px 8px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f9f9f9;
+		}
+
+		.search-box {
+			margin-bottom: 15px;
+		}
+
+		.search-box input[type="text"] {
+			padding: 6px 10px;
+			width: 250px;
+			font-size: 14px;
+		}
+
+		.search-box button {
+			padding: 6px 12px;
+			font-size: 14px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="menu">
+		<strong>Compensation</strong> &gt; Commission
+	</div>
+
+	<div class="tabs">
+		<a href="{{ url_for('homepage.commission', tab='summary') }}"
+			class="{{ 'active' if tab == 'summary' else '' }}">Summary</a>
+		<a href="{{ url_for('homepage.commission', tab='detail') }}"
+			class="{{ 'active' if tab == 'detail' else '' }}">Detail</a>
+	</div>
+
+	<div class="search-box">
+		<form method="get" action="{{ url_for('homepage.commission') }}">
+			<input type="hidden" name="tab" value="{{ tab }}">
+			<input type="text" name="search" placeholder="Search Agent Code or Name" value="{{ search }}">
+			<button type="submit">Search</button>
+		</form>
+	</div>
+
+	{% if tab == 'summary' %}
+	<table>
+		<thead>
+			<tr>
+				<th>No.</th>
+				<th>Agent Code</th>
+				<th>Agent Name</th>
+				<th>Agent Grade</th>
+				<th>Agent Status</th>
+				<th>Agent Appointed Date</th>
+				<th>Type Code</th>
+				<th>Premium</th>
+				<th>FYC</th>
+				<th>Bonus</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in data %}
+			<tr>
+				<td>{{ loop.index }}</td>
+				<td>{{ row.agent_code }}</td>
+				<td>{{ row.agent_name }}</td>
+				<td>{{ row.grade }}</td>
+				<td>{{ row.agent_status }}</td>
+				<td>{{ row.date_appointed }}</td>
+				<td>{{ row.type_code }}</td>
+				<td>{{ row.premium }}</td>
+				<td>{{ row.fyc }}</td>
+				<td>{{ row.bonus }}</td>
+			</tr>
+			{% else %}
+			<tr>
+				<td colspan="8" style="text-align:center;">No data found.</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<table>
+		<thead>
+			<tr>
+				<th>No.</th>
+				<th>Agent Code</th>
+				<th>Agent Name</th>
+				<th>Agent Grade</th>
+				<th>Agent Status</th>
+				<th>Agent Appointed Date</th>
+				<th>Policy No</th>
+				<th>Policy Status</th>
+				<th>Issued Date</th>
+				<th>Applied Premium Date</th>
+				<th>ACK Date</th>
+				<th>Free Look</th>
+				<th>Policy Type</th>
+				<th>Policy remark</th>
+				<th>Premium</th>
+				<th>FYC</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in data %}
+			{% for policy in row.policies %}
+			<tr>
+				<td>{{ loop.index }}</td>
+				<td>{{ row.agent_code }}</td>
+				<td>{{ row.agent_name }}</td>
+				<td>{{ row.grade }}</td>
+				<td>{{ row.agent_status }}</td>
+				<td>{{ row.date_appointed }}</td>
+				<td>{{ policy.policy_no }}</td>
+				<td>{{ policy.policy_status }}</td>
+				<td>{{ policy.issued_date }}</td>
+				<td>{{ policy.applied_premium_date }}</td>
+				<td>{{ policy.ack_date }}</td>
+				<td>{{ policy.freelook }}</td>
+				<td>{{ policy.policy_type }}</td>
+				<td>{{ policy.policy_remark }}</td>
+				<td>{{ policy.fyp }}</td>
+				<td>{{ policy.fyc }}</td>
+			</tr>
+			{% endfor %}
+			{% else %}
+			<tr>
+				<td colspan="18" style="text-align:center;">No data found.</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% endif %}
+
+</body>
+
+</html>

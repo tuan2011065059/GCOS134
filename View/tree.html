@@ -1,0 +1,26 @@
+<h1>Agent Structure</h1>
+<p>Thông tin Agent Structure...</p>
+<pre id="treeOutput"></pre>
+<script>
+	fetch('/tree-view')
+		.then(res => res.json())
+		.then(data => {
+			function buildTreeText(node, prefix = '', isLast = true) {
+				let line = prefix;
+				if (prefix !== '') line += isLast ? '└── ' : '├── ';
+				let name = node.name || node.area_code || node.agent_code;
+				if (node.area_code && !node.agent_code) name += ' (Area code)';
+				else if (node.agent_code) name += ' (Agent code)';
+				let result = line + name + '\n';
+				if (node.children && node.children.length > 0) {
+					const newPrefix = prefix + (isLast ? '    ' : '│   ');
+					node.children.forEach((child, idx) => {
+						result += buildTreeText(child, newPrefix, idx === node.children.length - 1);
+					});
+				}
+				return result;
+			}
+			document.getElementById('treeOutput').textContent = buildTreeText(data);
+		})
+		.catch(err => console.error(err));
+</script>

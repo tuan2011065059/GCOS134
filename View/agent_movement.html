@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Chuyển Reporting</title>
+</head>
+
+<body>
+	<h2>Nhập Agent Code để chuyển Reporting</h2>
+	<input type="text" id="agentCodeInput" placeholder="Nhập agent code..." />
+	<button onclick="loadCandidates()">Tìm agent cùng vùng</button>
+
+	<h3>Danh sách agent có thể chuyển reporting to:</h3>
+	<select id="candidateSelect" style="width: 300px;" size="10"></select>
+	<br /><br />
+	<button onclick="saveReporting()">Lưu thay đổi</button>
+
+	<p id="message"></p>
+
+	<script>
+		let currentAgentCode = '';
+
+		function loadCandidates() {
+			currentAgentCode = document.getElementById('agentCodeInput').value.trim();
+			if (!currentAgentCode) {
+				alert('Vui lòng nhập agent code');
+				return;
+			}
+			fetch(`/suggest-reporting?agent_code=${currentAgentCode}`)
+				.then(res => res.json())
+				.then(data => {
+					if (data.error) {
+						alert(data.error);
+						return;
+					}
+					const select = document.getElementById('candidateSelect');
+					select.innerHTML = '';
+					data.candidates.forEach(agent => {
+						const option = document.createElement('option');
+						option.value = agent.agent_code;
+						option.text = `${agent.agent_code} - ${agent.agent_name}`;
+						select.appendChild(option);
+					});
+				})
+				.catch(err => {
+					alert('Lỗi khi lấy dữ liệu');
+					console.error(err);
+				});
+		}
+
+		function saveReporting() {
+			const select = document.getElementById('candidateSelect');
+			const newReportingCode = select.value;
+			if (!newReportingCode) {
+				alert('Vui lòng chọn agent mới để chuyển reporting to');
+				return;
+			}
+			fetch('/update-reporting', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					agent_code: currentAgentCode,
+					new_reporting_code: newReportingCode
+				})
+			})
+				.then(res => res.json())
+				.then(data => {
+					if (data.error) {
+						document.getElementById('message').innerText = 'Lỗi: ' + data.error;
+					} else {
+						document.getElementById('message').innerText = data.message;
+					}
+				})
+				.catch(err => {
+					document.getElementById('message').innerText = 'Lỗi khi lưu thay đổi';
+					console.error(err);
+				});
+		}
+
+		// Gán hàm ra window để gọi từ onclick attribute
+		window.loadCandidates = loadCandidates;
+		window.saveReporting = saveReporting;
+	</script>
+
+</body>
+
+</html>
