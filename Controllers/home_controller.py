@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, Response
 import json
-from Models.user_model import build_agent_tree, get_user_commission, get_user_monthly, get_detail
+from Models.user_model import build_agent_tree, get_user_commission, get_user_monthly, get_detail, get_agent_detail_by_code
 from arango import ArangoClient
 
 home_blueprint = Blueprint('homepage', __name__)
@@ -187,3 +187,21 @@ def update_reporting():
     else:
         return jsonify({"error": "Failed to update reporting"}), 500
     
+@home_blueprint.route('/api/agent-detail/<agent_code>', methods=['GET'])
+def api_agent_detail(agent_code):
+    # Nếu bạn chưa có hàm model, có thể làm trực tiếp ở đây:
+    query = """
+    FOR a IN dms_agent_detail
+      FILTER a.agent_code == @agent_code
+      RETURN a
+    """
+    cursor = db.aql.execute(query, bind_vars={'agent_code': agent_code})
+    detail = None
+    for doc in cursor:
+        detail = doc
+        break
+
+    if detail:
+        return jsonify(detail)
+    else:
+        return jsonify({'error': 'Agent not found'}), 404

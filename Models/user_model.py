@@ -140,3 +140,14 @@ def get_user_monthly():
     cursor = users.find({'type_code': 'MONTHLY'})
     result = list(cursor)[:100]
     return result
+
+def get_agent_detail_by_code(agent_code):
+    query = """
+    FOR a IN dms_agent_detail
+      FILTER a.agent_code == @agent_code
+      RETURN a
+    """
+    cursor = db.aql.execute(query, bind_vars={'agent_code': agent_code})
+    for doc in cursor:
+        return doc
+    return None
