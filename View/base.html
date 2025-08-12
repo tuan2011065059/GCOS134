@@ -101,6 +101,12 @@
 	</div>
 
 	<div class="content">
+		<div id="search-area" class="mb-3" style="display: none;">
+			<form id="search-form" action="/tree-view" method="GET" class="d-flex" onsubmit="submitSearch(event)">
+				<input id="search-input" type="text" name="searchInput" class="form-control me-2" placeholder="Search...">
+				<button type="submit" class="btn btn-primary">Search</button>
+			</form>
+		</div>
 		<div id="content-area">Hãy chọn menu để hiển thị thông tin.</div>
 		{% block content %}{% endblock %}
 	</div>
@@ -120,6 +126,9 @@
 				})
 				.then(result => {
 					if (result.type === 'json') {
+						document.getElementById("search-area").style.display = "block";
+						document.getElementById("search-input").value = ""; // reset search
+
 						function buildTreeHtml(node) {
 							let name = '';
 
@@ -155,7 +164,6 @@
 							return html;
 						}
 
-
 						const treeHtml = '<ul class="tree-root">' + buildTreeHtml(result.data) + '</ul>';
 						document.getElementById("content-area").innerHTML = treeHtml;
 
@@ -170,6 +178,7 @@
 								e.stopPropagation();
 							});
 						});
+
 					} else {
 						document.getElementById("content-area").innerHTML = result.data;
 					}
@@ -178,6 +187,17 @@
 					document.getElementById("content-area").innerHTML = "<p class='text-danger'>Lỗi tải dữ liệu.</p>";
 					console.error(err);
 				});
+		}
+
+		// Submit search form bằng AJAX để không reload trang
+		function submitSearch(e) {
+			e.preventDefault();
+			const keyword = document.getElementById("search-input").value.trim();
+			if (keyword === '') {
+				loadContent('/tree-view'); // load toàn bộ cây
+			} else {
+				loadContent('/tree-view?searchInput=' + encodeURIComponent(keyword));
+			}
 		}
 	</script>
 </body>

@@ -24,12 +24,19 @@ def tree():
         # Nếu request trình duyệt thường: trả về HTML
         return render_template('tree.html')
 
+    return jsonify(tree_data)
 # View chi tiết thông tin đại lý 2
-@home_blueprint.route('/tree-view')
+@home_blueprint.route('/tree-view', methods=['GET'])
 def treeview():
-    data = build_agent_tree()
-    json_data = json.dumps(data, ensure_ascii=False)
-    return Response(json_data, mimetype='application/json')
+    search_term = request.args.get('searchInput', '').strip()
+
+    if not search_term or search_term.lower() == "all":
+        data = build_agent_tree()
+    else:
+        data = build_agent_tree(search_term)
+
+    return Response(json.dumps(data, ensure_ascii=False), mimetype='application/json')
+
 
 # View chi tiết lịch sử thay đổi chức vụ đại lý
 @home_blueprint.route("/agent-movement")
@@ -91,9 +98,10 @@ def monthly():
 client = ArangoClient(hosts="http://localhost:8529") 
 # Kết nối tới server
 db = client.db(
-    name="DMS",                 # Tên database
+    #name="agency_db",                 # Tên database
+    name="DMS",         # Tên database
     username="root",            # Tên đăng nhập
-    password="ntnqplnvtc"       # Mật khẩu
+    password="123456"       # Mật khẩu
 )
 # View Movement - Phương thức get
 @home_blueprint.route('/suggest-reporting', methods=['GET'])
@@ -178,3 +186,4 @@ def update_reporting():
         return jsonify({"message": "Reporting updated successfully"})
     else:
         return jsonify({"error": "Failed to update reporting"}), 500
+    

@@ -5,9 +5,10 @@ import re
 client = ArangoClient(hosts="http://localhost:8529") 
 # Kết nối tới server
 db = client.db(
-    name="DMS",                 # Tên database
+    name="DMS",         # Tên database
+    #name="agency_db",                 
     username="root",            # Tên đăng nhập
-    password="ntnqplnvtc"       # Mật khẩu
+    password="123456"       # Mật khẩu
 )
 
 # ------Bắt đầu tác vụ lấy thông tin từ Database------#
@@ -15,6 +16,7 @@ db = client.db(
 # Lấy thông tin Đại lý - Agency từ bảng Agent
 def get_user():
     users = db.collection('Agent')
+    #users = db.collection('dms_agent_detail')
     cursor = users.all()
     for user in cursor:
         return user  # Trả về user đầu tiên
@@ -54,19 +56,34 @@ def build_tree_for_area(agents):
     return roots
 
 # Build cây toàn bộ
-def build_agent_tree():
+def build_agent_tree(search_term=None):
+    
+    bind_vars = {}
+    search_filter = ""
+
+    if search_term:
+        search_filter = """
+            AND (
+                LIKE(a.agent_code, @term, true) 
+                OR LIKE(a.agent_name, @term, true)
+            )
+        """
+        bind_vars["term"] = f"%{search_term}%"
+        
     # Lấy dữ liệu chỉ với agent_status = inforce
+    # FOR a IN dms_agent_detail 
     users = db.aql.execute("""
-        FOR a IN Agent
-            FILTER a.agent_status == "Inforce"
-            RETURN {
-                area_code: a.area_code,
-                area_name: a.area_name,       
-                agent_code: a.agent_code,
-                agent_name: a.agent_name,
-                agent_parent_code: a.agent_parent_code
-            }
-    """)
+    FOR a IN Agent
+        FILTER a.agent_status == "Inforce"
+        """ + search_filter + """
+        RETURN {
+            area_code: a.area_code,
+            area_name: a.area_name,       
+            agent_code: a.agent_code,
+            agent_name: a.agent_name,
+            agent_parent_code: a.agent_parent_code
+        }
+""", bind_vars=bind_vars)
     nodes = list(users)
 
     # Gom đại lý theo area_code
