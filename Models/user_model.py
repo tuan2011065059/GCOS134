@@ -5,8 +5,8 @@ import re
 client = ArangoClient(hosts="http://localhost:8529") 
 # Kết nối tới server
 db = client.db(
-    name="DMS",         # Tên database
-    #name="agency_db",                 
+    #name="DMS",         # Tên database
+    name="agency_db",                 
     username="root",            # Tên đăng nhập
     password="123456"       # Mật khẩu
 )
@@ -71,9 +71,9 @@ def build_agent_tree(search_term=None):
         bind_vars["term"] = f"%{search_term}%"
         
     # Lấy dữ liệu chỉ với agent_status = inforce
-    # FOR a IN dms_agent_detail 
+    # FOR a IN dms_agent_detail/Agent
     users = db.aql.execute("""
-    FOR a IN Agent
+    FOR a IN dms_agent_detail 
         FILTER a.agent_status == "Inforce"
         """ + search_filter + """
         RETURN {
