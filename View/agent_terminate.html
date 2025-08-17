@@ -1,0 +1,37 @@
+<h2>Terminate Agent</h2>
+<!-- Hiển thị thông báo -->
+{% if message %}
+<p style="color:red; font-weight:bold;">{{ message }}</p>
+{% endif %}
+<!-- Form nhập agent code -->
+<form method="POST" action="/agent-terminate-tree">
+	<label>Agent Code:</label>
+	<input type="text" name="agent_code" value="{{ agent_code }}" placeholder="Enter agent code" required>
+	<button type="submit" name="action" value="search">Xem cấu trúc</button>
+	<button type="submit" name="action" value="terminate" style="background:red; color:white;">Terminate</button>
+	<button type="button" onclick="window.location.href='/agent-terminate-tree';"
+		style="background:blue; color:white;">
+		Refresh
+	</button>
+</form>
+
+{% if tree %}
+<h3>Cấu trúc hiện tại của Agent {{ agent_code }}</h3>
+<!-- Hiển thị dạng cây đơn giản -->
+<table border="1" cellpadding="5">
+	<tr>
+		<th>Agent Code</th>
+		<th>Agent Name</th>
+		<th>Grade</th>
+		<th>Status</th>
+	</tr>
+	{% for t in tree %}
+	<tr>
+		<td>{{ t.agent_code }}</td>
+		<td>{{ t.agent_name }}</td>
+		<td>{{ t.grade }}</td>
+		<td>{{ t.agent_status }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endif %}

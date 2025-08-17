@@ -1,334 +1,296 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>DMS - Distribution Management System</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-      }
+<head>
+  <meta charset="utf-8" />
+  <title>DMS - Distribution Management System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-      .sidebar {
-        width: 250px;
-        height: 100vh;
-        background: #f5f5f5;
-        padding: 20px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        overflow-y: auto;
-      }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
 
-      .content {
-        margin-left: 260px;
-        padding: 20px;
-      }
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #f5f5f5;
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+    }
 
-      .menu-title {
-        font-weight: bold;
-        margin-bottom: 10px;
-      }
+    .content {
+      margin-left: 260px;
+      padding: 20px;
+    }
 
-      .nav-link {
-        cursor: pointer;
-      }
+    .menu-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-      /* Cây thư mục */
-      ul.tree-root,
-      ul.nested {
-        list-style-type: none;
-        padding-left: 1em;
-        line-height: 1.5em;
-      }
+    .nav-link {
+      cursor: pointer;
+    }
 
-      ul.nested {
-        display: none;
-        margin-left: 1em;
-        border-left: 1px dashed #ccc;
-        padding-left: 0.5em;
-      }
+    /* Cây thư mục */
+    ul.tree-root,
+    ul.nested {
+      list-style-type: none;
+      padding-left: 1em;
+      line-height: 1.5em;
+    }
 
-      ul.nested.active {
-        display: block;
-      }
+    ul.nested {
+      display: none;
+      margin-left: 1em;
+      border-left: 1px dashed #ccc;
+      padding-left: 0.5em;
+    }
 
-      .tree-node {
-        user-select: none;
-        cursor: pointer;
-        position: relative;
-        padding-left: 1.2em;
-        display: inline-block;
-      }
+    ul.nested.active {
+      display: block;
+    }
 
-      /* Mũi tên */
-      .tree-node::before {
-        content: "▶";
-        position: absolute;
-        left: 0;
-        top: 0;
-        font-size: 0.8em;
-        transition: transform 0.2s ease;
-      }
+    .tree-node {
+      user-select: none;
+      cursor: pointer;
+      position: relative;
+      padding-left: 1.2em;
+      display: inline-block;
+    }
 
-      /* Khi mở rộng */
-      .tree-node.open::before {
-        transform: rotate(90deg);
-      }
-    </style>
-  </head>
+    /* Mũi tên */
+    .tree-node::before {
+      content: "▶";
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 0.8em;
+      transition: transform 0.2s ease;
+    }
 
-  <body>
-    <div class="sidebar">
-      <div class="menu-title">AGENCY ADMINISTRATOR</div>
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link" onclick="loadContent('/agent-info')"
-            >Agent Information</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" onclick="loadContent('/agent-movement')"
-            >Agent Movement</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" onclick="loadContent('/agent-appointment')"
-            >Agent Appointment</a
-          >
-        </li>
-      </ul>
+    /* Khi mở rộng */
+    .tree-node.open::before {
+      transform: rotate(90deg);
+    }
+  </style>
+</head>
 
-      <div class="menu-title">COMPENSATION</div>
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link" onclick="loadContent('/commission')"
-            >Commission</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" onclick="loadContent('/monthly')"
-            >Monthly Bonus</a
-          >
-        </li>
-      </ul>
+<body>
+  <div class="sidebar">
+    <div class="menu-title">AGENCY ADMINISTRATOR</div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" onclick="loadContent('/agent-info')">Agent Information</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="loadContent('/agent-movement')">Agent Movement</a>
+      </li>
+    </ul>
+
+    <div class="menu-title">COMPENSATION</div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" onclick="loadContent('/commission')">Commission</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="loadContent('/monthly')">Monthly Bonus</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <div id="search-area" class="mb-3" style="display: none">
+      <form id="search-form" action="/tree-view" method="GET" class="d-flex" onsubmit="submitSearch(event)">
+        <input id="search-input" type="text" name="searchInput" class="form-control me-2" placeholder="Search..." />
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
     </div>
+    <div id="content-area">Hãy chọn menu để hiển thị thông tin.</div>
+    {% block content %}{% endblock %}
+  </div>
 
-    <div class="content">
-      <div id="search-area" class="mb-3" style="display: none">
-        <form
-          id="search-form"
-          action="/tree-view"
-          method="GET"
-          class="d-flex"
-          onsubmit="submitSearch(event)"
-        >
-          <input
-            id="search-input"
-            type="text"
-            name="searchInput"
-            class="form-control me-2"
-            placeholder="Search..."
-          />
-          <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-      </div>
-      <div id="content-area">Hãy chọn menu để hiển thị thông tin.</div>
-      {% block content %}{% endblock %}
-    </div>
-
-    <div
-      class="modal fade"
-      id="infoModal"
-      tabindex="-1"
-      aria-labelledby="infoModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="infoModalLabel">
-              Thông tin chi tiết
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body" id="modalBodyContent">
-            <!-- Nội dung sẽ được cập nhật bằng JS -->
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Đóng
-            </button>
-          </div>
+  <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="infoModalLabel">
+            Thông tin chi tiết
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalBodyContent">
+          <!-- Nội dung sẽ được cập nhật bằng JS -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Đóng
+          </button>
         </div>
       </div>
     </div>
-    <script>
-  function loadContent(url) {
-    fetch(url, {
-      headers: { "X-Requested-With": "XMLHttpRequest" },
-    })
-      .then((res) => {
-        const contentType = res.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          return res.json().then((data) => ({ type: "json", data }));
-        } else {
-          return res.text().then((html) => ({ type: "html", data: html }));
-        }
-      })
-      .then((result) => {
-        if (result.type === "json") {
-          document.getElementById("search-area").style.display = "block";
-          document.getElementById("search-input").value = ""; // reset search
-
-          // buildTreeHtml nhận thêm param isRoot để gán data-root="true"
-          function buildTreeHtml(node, isRoot = false) {
-            let name = "";
-
-            if (node.area_code && !node.agent_code) {
-              const code = node.area_code || "Unknown area code";
-              const areaName = node.area_name || "Unknown area name";
-              name = `${code} - ${areaName}`;
-            } else if (node.agent_code) {
-              const code = node.agent_code || "Unknown agent code";
-              const agentName = node.agent_name || "Unknown agent name";
-              name = `${code} - ${agentName}`;
-            } else if (node.name) {
-              name = node.name;
-            } else {
-              name = "Unknown";
-            }
-
-            // Gán data-root="true" cho root node, và data-agent-code nếu có
-            const dataRootAttr = isRoot ? 'data-root="true"' : "";
-            const dataAgentCodeAttr = node.agent_code
-              ? `data-agent-code="${node.agent_code}"`
-              : "";
-
-            let html = `<li><span class="tree-node" ${dataRootAttr} ${dataAgentCodeAttr}>${name}</span>`;
-
-            if (node.children && node.children.length > 0) {
-              html += '<ul class="nested">';
-              node.children.forEach((child) => {
-                html += buildTreeHtml(child, false);
-              });
-              html += "</ul>";
-            }
-
-            html += "</li>";
-            return html;
-          }
-
-          const treeHtml =
-            '<ul class="tree-root">' + buildTreeHtml(result.data, true) + "</ul>";
-          document.getElementById("content-area").innerHTML = treeHtml;
-
-          // Gắn sự kiện toggle mở rộng/thu gọn + gọi API khi click node lá
-          document.querySelectorAll(".tree-node").forEach((span) => {
-  span.addEventListener("click", function (e) {
-    const nextUl = this.nextElementSibling;
-
-    // Kiểm tra xem node có phải root hoặc node cấp 1 (con trực tiếp của root) không
-    // Nếu có, chỉ toggle cây con, không hiện modal
-    const isRoot = this.getAttribute("data-root") === "true";
-    const isFirstLevel = this.parentElement.parentElement.classList.contains("tree-root");
-
-    if (
-      nextUl &&
-      nextUl.classList.contains("nested") &&
-      nextUl.children.length > 0
-    ) {
-      // Toggle cây con
-      nextUl.classList.toggle("active");
-      this.classList.toggle("open");
-
-      // Nếu là root hoặc node cấp 1 thì dừng, không hiện modal
-      if (isRoot || isFirstLevel) {
-        e.stopPropagation();
-        return;
-      }
-    }
-
-    // Node lá (không có con) hoặc không có con hoặc con rỗng
-    const agentCode = this.getAttribute("data-agent-code");
-    if (!agentCode) {
-      // Không có agent_code, hiện modal đơn giản
-      const modal = new bootstrap.Modal(document.getElementById("infoModal"));
-      document.getElementById("modalBodyContent").textContent = this.textContent;
-      modal.show();
-    } else {
-      // Fetch dữ liệu chi tiết đại lý từ API
-      fetch(`/api/agent-detail/${encodeURIComponent(agentCode)}`, {
+  </div>
+  <script>
+    function loadContent(url) {
+      fetch(url, {
         headers: { "X-Requested-With": "XMLHttpRequest" },
       })
         .then((res) => {
-          if (!res.ok)
-            throw new Error("Không tìm thấy đại lý hoặc lỗi server");
-          return res.json();
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            return res.json().then((data) => ({ type: "json", data }));
+          } else {
+            return res.text().then((html) => ({ type: "html", data: html }));
+          }
         })
-        .then((agentDetail) => {
-          const modal = new bootstrap.Modal(document.getElementById("infoModal"));
+        .then((result) => {
+          if (result.type === "json") {
+            document.getElementById("search-area").style.display = "block";
+            document.getElementById("search-input").value = ""; // reset search
 
-          // Tạo bảng hiển thị dữ liệu agentDetail
-          let html = '<table class="table table-bordered table-striped">';
-          for (const [key, value] of Object.entries(agentDetail)) {
-            html += `
+            // buildTreeHtml nhận thêm param isRoot để gán data-root="true"
+            function buildTreeHtml(node, isRoot = false) {
+              let name = "";
+
+              if (node.area_code && !node.agent_code) {
+                const code = node.area_code || "Unknown area code";
+                const areaName = node.area_name || "Unknown area name";
+                name = `${code} - ${areaName}`;
+              } else if (node.agent_code) {
+                const code = node.agent_code || "Unknown agent code";
+                const agentName = node.agent_name || "Unknown agent name";
+                const agentGrade = node.grade || "Unknown agent grade";
+                const agentStatus = node.agent_status || "Unknown agent status";
+                name = `${code} - ${agentName} - ${agentGrade} - ${agentStatus}`;
+              } else if (node.name) {
+                name = node.name;
+              }
+              else {
+                name = "Unknown";
+              }
+
+              // Gán data-root="true" cho root node, và data-agent-code nếu có
+              const dataRootAttr = isRoot ? 'data-root="true"' : "";
+              const dataAgentCodeAttr = node.agent_code
+                ? `data-agent-code="${node.agent_code}"`
+                : "";
+
+              let html = `<li><span class="tree-node" ${dataRootAttr} ${dataAgentCodeAttr}>${name}</span>`;
+
+              if (node.children && node.children.length > 0) {
+                html += '<ul class="nested">';
+                node.children.forEach((child) => {
+                  html += buildTreeHtml(child, false);
+                });
+                html += "</ul>";
+              }
+
+              html += "</li>";
+              return html;
+            }
+
+            const treeHtml =
+              '<ul class="tree-root">' + buildTreeHtml(result.data, true) + "</ul>";
+            document.getElementById("content-area").innerHTML = treeHtml;
+
+            // Gắn sự kiện toggle mở rộng/thu gọn + gọi API khi click node lá
+            document.querySelectorAll(".tree-node").forEach((span) => {
+              span.addEventListener("click", function (e) {
+                const nextUl = this.nextElementSibling;
+
+                // Kiểm tra xem node có phải root hoặc node cấp 1 (con trực tiếp của root) không
+                // Nếu có, chỉ toggle cây con, không hiện modal
+                const isRoot = this.getAttribute("data-root") === "true";
+                const isFirstLevel = this.parentElement.parentElement.classList.contains("tree-root");
+
+                if (
+                  nextUl &&
+                  nextUl.classList.contains("nested") &&
+                  nextUl.children.length > 0
+                ) {
+                  // Toggle cây con
+                  nextUl.classList.toggle("active");
+                  this.classList.toggle("open");
+
+                  // Nếu là root hoặc node cấp 1 thì dừng, không hiện modal
+                  if (isRoot || isFirstLevel) {
+                    e.stopPropagation();
+                    return;
+                  }
+                }
+
+                // Node lá (không có con) hoặc không có con hoặc con rỗng
+                const agentCode = this.getAttribute("data-agent-code");
+                if (!agentCode) {
+                  // Không có agent_code, hiện modal đơn giản
+                  const modal = new bootstrap.Modal(document.getElementById("infoModal"));
+                  document.getElementById("modalBodyContent").textContent = this.textContent;
+                  modal.show();
+                } else {
+                  // Fetch dữ liệu chi tiết đại lý từ API
+                  fetch(`/api/agent-detail/${encodeURIComponent(agentCode)}`, {
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                  })
+                    .then((res) => {
+                      if (!res.ok)
+                        throw new Error("Không tìm thấy đại lý hoặc lỗi server");
+                      return res.json();
+                    })
+                    .then((agentDetail) => {
+                      const modal = new bootstrap.Modal(document.getElementById("infoModal"));
+
+                      // Tạo bảng hiển thị dữ liệu agentDetail
+                      let html = '<table class="table table-bordered table-striped">';
+                      for (const [key, value] of Object.entries(agentDetail)) {
+                        html += `
               <tr>
                 <th style="width:35%; text-transform: capitalize;">${key.replace(/_/g, " ")}</th>
                 <td>${value === null ? "" : value}</td>
               </tr>`;
-          }
-          html += "</table>";
+                      }
+                      html += "</table>";
 
-          document.getElementById("modalBodyContent").innerHTML = html;
-          modal.show();
+                      document.getElementById("modalBodyContent").innerHTML = html;
+                      modal.show();
+                    })
+                    .catch((err) => {
+                      alert(err.message);
+                      console.error(err);
+                    });
+                }
+
+                e.stopPropagation();
+              });
+            });
+
+          } else {
+            document.getElementById("content-area").innerHTML = result.data;
+          }
         })
         .catch((err) => {
-          alert(err.message);
+          document.getElementById("content-area").innerHTML =
+            "<p class='text-danger'>Lỗi tải dữ liệu.</p>";
           console.error(err);
         });
     }
 
-    e.stopPropagation();
-  });
-});
-
-        } else {
-          document.getElementById("content-area").innerHTML = result.data;
-        }
-      })
-      .catch((err) => {
-        document.getElementById("content-area").innerHTML =
-          "<p class='text-danger'>Lỗi tải dữ liệu.</p>";
-        console.error(err);
-      });
-  }
-
-  // Submit search form bằng AJAX để không reload trang
-  function submitSearch(e) {
-    e.preventDefault();
-    const keyword = document.getElementById("search-input").value.trim();
-    if (keyword === "") {
-      loadContent("/tree-view"); // load toàn bộ cây
-    } else {
-      loadContent("/tree-view?searchInput=" + encodeURIComponent(keyword));
+    // Submit search form bằng AJAX để không reload trang
+    function submitSearch(e) {
+      e.preventDefault();
+      const keyword = document.getElementById("search-input").value.trim();
+      if (keyword === "") {
+        loadContent("/tree-view"); // load toàn bộ cây
+      } else {
+        loadContent("/tree-view?searchInput=" + encodeURIComponent(keyword));
+      }
     }
-  }
-</script>
+  </script>
 
-  </body>
+</body>
+
 </html>

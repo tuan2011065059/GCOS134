@@ -1,0 +1,46 @@
+<h1>Tìm đại lý cần thay đổi nhóm</h1>
+
+<!-- Hiển thị flash message -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div>
+	{% for category, message in messages %}
+	<p class="{% if category == 'error' %}msg-error{% elif category == 'success' %}msg-success{% endif %}">
+		{{ message }}
+	</p>
+	{% endfor %}
+
+</div>
+{% endif %}
+{% endwith %}
+
+<form method="POST" action="/suggest-reporting">
+	<input type="text" name="agent_code" value="{{ r.agent_code }}" placeholder="Nhập mã đại lý" required>
+	<button type="submit">Tìm</button>
+</form>
+
+{% if result %}
+<h2>Vui lòng chọn leader</h2>
+<table border="1" cellpadding="5">
+	<tr>
+		<th>Agent Code</th>
+		<th>Agent Name</th>
+		<th>Grade</th>
+		<th>Action</th>
+	</tr>
+	{% for r in result %}
+	<tr>
+		<td>{{ r.agent_code }}</td>
+		<td>{{ r.agent_name }}</td>
+		<td>{{ r.grade }}</td>
+		<td>
+			<form method="POST" action="/do-transfer">
+				<input type="hidden" name="current_agent_code" value="{{ request.form.agent_code }}">
+				<input type="hidden" name="new_leader_code" value="{{ r.agent_code }}">
+				<button type="submit">Chọn</button>
+			</form>
+		</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endif %}

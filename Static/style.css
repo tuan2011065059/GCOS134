@@ -2,4 +2,19 @@ body {
 	font-family: Arial, sans-serif;
 	background-color: black;
 	padding: 40px;
-    }
+}
+
+.msg-error {
+	padding: 8px;
+	border-radius: 4px;
+	background-color: #ffdddd;
+	color: #a33;
+}
+      
+.msg-success {
+	padding: 8px;
+	border-radius: 4px;
+	background-color: #ddffdd;
+	color: #2d662d;
+}
+      

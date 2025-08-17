@@ -8,9 +8,15 @@
 			function buildTreeText(node, prefix = '', isLast = true) {
 				let line = prefix;
 				if (prefix !== '') line += isLast ? '└── ' : '├── ';
-				let name = node.name || node.area_code || node.agent_code;
+				let name = node.name || node.area_code || node.agent_code || node.agent_status || node.grade;
 				if (node.area_code && !node.agent_code) name += ' (Area code)';
 				else if (node.agent_code) name += ' (Agent code)';
+				if (node.grade) {
+					name += ' (Grade)';
+				}
+				if (node.agent_status) {
+					name += ' (Agent status)';
+				}
 				let result = line + name + '\n';
 				if (node.children && node.children.length > 0) {
 					const newPrefix = prefix + (isLast ? '    ' : '│   ');
