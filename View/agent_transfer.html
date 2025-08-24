@@ -1,4 +1,5 @@
-<h1>Tìm đại lý cần thay đổi nhóm</h1>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+<h1 style="padding: 5px; border-radius: 10px; text-align: center;" class="bg-primary">Tìm đại lý cần thay đổi nhóm</h1>
 
 <!-- Hiển thị flash message -->
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -15,12 +16,12 @@
 {% endwith %}
 
 <form method="POST" action="/suggest-reporting">
-	<input type="text" name="agent_code" value="{{ r.agent_code }}" placeholder="Nhập mã đại lý" required>
-	<button type="submit">Tìm</button>
+	<input class="form-control w-50" type="text" name="agent_code" value="{{ r.agent_code }}" placeholder="Nhập mã đại lý" required>
+	<button class="btn btn-primary"  type="submit">Tìm</button>
 </form>
 
 {% if result %}
-<h2>Vui lòng chọn leader</h2>
+<h2 style="text-align: center; padding: 5px; border-radius: 10px;" class="bg-primary">Vui lòng chọn leader</h2>
 <table border="1" cellpadding="5">
 	<tr>
 		<th>Agent Code</th>
@@ -44,3 +45,5 @@
 	{% endfor %}
 </table>
 {% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>

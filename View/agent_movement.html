@@ -1,13 +1,15 @@
-<h1>Chọn chức năng Movement</h1>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+<h1 style="text-align: center; border-radius: 20px; padding: 5px;" class="bg-primary">Chọn chức năng Movement</h1>
 
-<form method="GET" action="/agent-transfer" style="display: flex; align-items: center; gap: 10px;">
+<form method="GET" action="/agent-transfer" style="display: flex; align-items: center; gap: 10px; margin: 20px;">
 	<span>Transfer Agent</span>
-	<input type="hidden" name="action" value="transfer">
-	<button type="submit">Thực hiện</button>
+	<input class="form-control" type="hidden" name="action" value="transfer">
+	<button class="btn btn-success" style="border: 1px solid red;" type="submit">Thực hiện</button>
 </form>
 
-<form method="GET" action="/agent-terminate" style="display: flex; align-items: center; gap: 10px;">
+<form method="GET" action="/agent-terminate" style="display: flex; align-items: center; gap: 10px; margin: 5px;">
 	<span>Terminate Agent</span>
-	<input type="hidden" name="action" value="terminate">
-	<button type="submit">Thực hiện</button>
+	<input class="form-control w-25" type="hidden" name="action" value="terminate">
+	<button class="btn btn-success" type="submit">Thực hiện</button>
 </form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
