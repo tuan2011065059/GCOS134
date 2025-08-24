@@ -5,6 +5,16 @@
 {% if message %}
 <p style="color:red; font-weight:bold;">{{ message }}</p>
 {% endif %}
+<!-- css  -->
+<style>
+    table, td, th {
+        border: 1px solid;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+</style>
 <!-- Form nhập agent code -->
 <form style="margin:20px 0 0 50px;" method="POST" action="/agent-terminate-tree">
 	<label>Agent Code:</label>

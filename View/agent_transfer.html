@@ -4,6 +4,15 @@
 <!-- Hiển thị flash message -->
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
+<style>
+    table, td, th {
+        border: 1px solid;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+</style>
 <div>
 	{% for category, message in messages %}
 	<p class="{% if category == 'error' %}msg-error{% elif category == 'success' %}msg-success{% endif %}">
