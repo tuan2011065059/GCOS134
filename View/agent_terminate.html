@@ -1,14 +1,14 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-<h1>Chọn chức năng Movement</h1>
-<h2>Terminate Agent</h2>
+<h1 style="text-align: center; background-color: aqua; padding: 10px 0;">Chọn chức năng Movement</h1>
+<h2 style="margin-left: 50px;">Terminate Agent</h2>
 <!-- Hiển thị thông báo -->
 {% if message %}
 <p style="color:red; font-weight:bold;">{{ message }}</p>
 {% endif %}
 <!-- Form nhập agent code -->
-<form method="POST" action="/agent-terminate-tree">
+<form style="margin:20px 0 0 50px;" method="POST" action="/agent-terminate-tree">
 	<label>Agent Code:</label>
-	<input class="form-control w-50" type="text" name="agent_code" value="{{ agent_code }}" placeholder="Enter agent code" required>
+	<input style="margin: 30px 0 ;" class="form-control w-50" type="text" name="agent_code" value="{{ agent_code }}" placeholder="Enter agent code" required>
 	<button class="btn btn-success" type="submit" name="action" value="search">Xem cấu trúc</button>
 	<button class="btn btn-danger" type="submit" name="action" value="terminate" style="background:red; color:white;">Terminate</button>
 	<button class="btn btn-primary" type="button" onclick="window.location.href='/agent-terminate-tree';"

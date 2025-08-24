@@ -77,13 +77,18 @@
     /* Khi mở rộng */
     .tree-node.open::before {
       transform: rotate(90deg);
+
+    }
+    ul li:hover{
+      background-color: orange; /* Màu nền khi hover */
+      cursor: pointer; /* Hiển thị con trỏ tay khi hover */
     }
   </style>
 </head>
 
 <body>
   <div class="sidebar">
-    <div class="menu-title">AGENCY ADMINISTRATOR</div>
+    <div style="background:rgb(13, 182, 61); color: #ccc; padding: 0 2px;" class="menu-title text-light-emphasis">AGENCY ADMINISTRATOR</div>
     <ul class="nav flex-column">
       <li class="nav-item">
         <a class="nav-link" onclick="loadContent('/agent-info')">Agent Information</a>
@@ -93,7 +98,7 @@
       </li>
     </ul>
 
-    <div class="menu-title">COMPENSATION</div>
+    <div style="background:rgb(13, 182, 61); color: #ccc; padding: 0 2px;"  class="menu-title text-light-emphasis">COMPENSATION</div>
     <ul class="nav flex-column">
       <li class="nav-item">
         <a class="nav-link" onclick="loadContent('/commission')">Commission</a>
@@ -223,7 +228,7 @@
                     return;
                   }
                 }
-
+ 
                 // Node lá (không có con) hoặc không có con hoặc con rỗng
                 const agentCode = this.getAttribute("data-agent-code");
                 if (!agentCode) {
